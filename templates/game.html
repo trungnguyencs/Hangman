@@ -1,0 +1,35 @@
+<html>
+   <body>
+      <form action = "http://localhost:5000/guess" method = "post">
+         <input type="hidden" name="gameId" value={{ game_id }}>
+         <p>Enter a character:</p>
+         <p><input type = "text" name = "character" /> {{ message }}</p>
+         <p><input type = "submit" value = "Guess" /></p>
+      </form>
+      <p>
+         <br> ========================
+         <br> Word to guess: {{ secret_word }}
+         <br> Incorrect guesses: {{ incorrect_guesses }}
+         <br> You have {{ 6 - step }} guesses left!"
+         {% if step >= 1 %}
+         <br>  &nbsp;&nbsp;&nbsp;  0
+         {% endif %}
+         {% if step >= 2 %}
+         <br> &nbsp;  /
+         {% endif %}
+         {% if step >= 3 %}
+          |
+         {% endif %}
+         {% if step >= 4 %}
+          \
+         {% endif %}
+         {% if step >= 5 %}
+         <br>  &nbsp; /
+         {% endif %}
+         {% if step >= 6 %}
+         &nbsp; \
+         {% endif %}
+      </p>
+   </body>
+</html>
+
