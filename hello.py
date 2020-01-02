@@ -12,11 +12,12 @@ def home():
 @app.route('/result', methods=['POST', 'GET'])
 def start_game():
     if request.method == 'POST':
+      # username = request.form['username']
       if request.form['submit_button'] in ['Start Single Player Mode', 'Replay Single Player Mode']:
         game = Hangman.new_game()
         return render_game(game,'')
       elif request.form['submit_button'] in ['Start Two Player Mode', 'Replay Two Player Mode']:
-        pass
+        return render_template('double_options.html')
       elif request.form['submit_button'] == "Menu":
         return render_template('index.html')
     return "Game started"
@@ -24,19 +25,42 @@ def start_game():
 @app.route('/guess', methods=['POST'])
 def guess():
     if request.method == 'POST':
-        letter = request.form['character']
+        letter = request.form['character'].lower()
         game_id = int(request.form['gameId'])
         print("Game to play:", game_id)
         game = Hangman.get_game(game_id)
-        if not len(letter) == 1 or not letter.isalpha():
-            message = " Please enter a letter only!"
-            return render_game(game, message)
-        game.guess(letter.lower())
+
+        if not len(letter) == 1 or not letter.isalpha() or letter in game.usedLetters:
+          if not letter.isalpha():
+            message = " You have to guess a letter!"
+          elif len(letter) != 1:
+            message = " You can't guess more than one letter at a time!"
+          elif letter in game.usedLetters:
+            message = " You already tried that letter!"   
+          return render_game(game, message)
+
+        game.guess(letter)
         if game.isWinning():
             return render_template("single_result.html", result= "won", secret_word=game.secretWord)
         if game.isLosing():
             return render_template("single_result.html", result= "lost", secret_word=game.secretWord)
         return render_game(game, " Your guess is: " + letter)
+
+@app.route('/choice', methods=['POST', 'GET'])
+def create_join_game():
+    if request.method == 'POST':
+      if request.form['submit_button'] == "Create A New Game":
+        return render_template("double_create_game.html")
+      if request.form['submit_button'] == "Join A Game":
+        pass
+      return "Create/Join Game"
+
+@app.route('/create_success', methods=['POST', 'GET'])
+def create_success():
+    if request.method == 'POST':
+      secretWord = request.form['word_to_guess'].lower()
+      game = Hangman.new_game(secretWord)
+    return render_template("double_create_success.html", secretWord=secretWord)
 
 def render_game(game, message):
     display = "".join(game.get_word())

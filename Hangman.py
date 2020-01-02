@@ -6,8 +6,8 @@ class Hangman:
     counter = 1
 
     @classmethod
-    def new_game(cls):
-        game = cls(getWord(), cls.counter)
+    def new_game(cls, secretWord=random.choice(['apple', 'banana', 'kiwi', 'orange', 'tomato', 'juice', 'firewood', 'beautiful', 'pencil'])):
+        game = cls(secretWord, cls.counter)
         cls.games[game.id] = game
         cls.counter = cls.counter + 1
         return game
@@ -21,8 +21,10 @@ class Hangman:
         self.displayWord = list('_ ' * len(secretWord))
         self.incorrectLetters = []
         self.id = counter
+        self.usedLetters = set()
 
     def guess(self, guessLetter):
+        self.usedLetters.add(guessLetter)
         if guessLetter in self.secretWord:
             for index in range(len(self.secretWord)):
                 if self.secretWord[index] == guessLetter:
