@@ -37,6 +37,8 @@ def start_game():
 
   return "Game started"
 
+
+
 @app.route('/guess', methods=['POST'])
 def guess():
   if request.method == 'POST':

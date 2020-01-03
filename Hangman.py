@@ -2,7 +2,7 @@ import subprocess as sp
 import random
 
 class Hangman:
-  games = dict()
+  games = {}
   counter = 1
 
   @classmethod
