@@ -13,7 +13,6 @@ def home():
 @app.route('/join', methods=['POST', 'GET'])
 def start_game():
     if request.method == 'POST':
-      # username = request.form['username']
       if request.form['submit_button'] in ['Start Single Player Mode', 'Replay Single Player Mode']:
         game = Hangman.new_game()
         return render_game(game,'')
@@ -34,16 +33,19 @@ def guess():
         game_id = int(request.form['gameId'])
         print("Game to play:", game_id)
         game = Hangman.get_game(game_id)
-
-        if not len(letter) == 1 or not letter.isalpha() or letter in game.usedLetters:
-          if not letter.isalpha():
-            message = " You have to guess a letter!"
-          elif len(letter) != 1:
-            message = " You can't guess more than one letter at a time!"
-          elif letter in game.usedLetters:
-            message = " You already tried that letter!"   
-          return render_game(game, message)
-
+        
+        def check_valid(letter):
+          message = ''
+          if not len(letter) == 1 or not letter.isalpha() or letter in game.usedLetters:
+            if not letter.isalpha():
+              message = " You have to guess a letter!"
+            elif len(letter) != 1:
+              message = " You can't guess more than one letter at a time!"
+            elif letter in game.usedLetters:
+              message = " You already tried that letter!"  
+          return message 
+        
+        if check_valid(letter): return render_game(game, check_valid(letter))
         game.guess(letter)
         if game.isWinning():
             return render_template("single_result.html", result= "won", secret_word=game.secretWord)
@@ -64,15 +66,18 @@ def create_join_game():
 def create_success():
     if request.method == 'POST':
       secretWord = request.form['word_to_guess'].lower()
-
-      for ch in secretWord:
-        if not ch.isalpha():
-          message = "Invalid input: only a secret word with all alphabetical letters allowed!"
-          return render_template("double_create_game.html", message=message) 
-      if len(set(list(secretWord))) >= 20:
-          message = "Invalid input: only a word fewer than 20 dictict digits allowed"
-          return render_template("double_create_game.html", message=message)     
-
+      
+      def check_valid(secretWord):
+        message = ''
+        for ch in secretWord:
+          if not ch.isalpha():
+            message = "Invalid input: only a secret word with all alphabetical letters allowed!"
+            return render_template("double_create_game.html", message=message) 
+        if len(set(list(secretWord))) >= 20:
+            message = "Invalid input: only a word fewer than 20 dictict digits allowed"
+        return message
+      
+      if check_valid(secretWord): return render_template("double_create_game.html", message=check_valid(secretWord))     
       game = Hangman.new_game(secretWord)
       id = game.id
     return render_template("double_create_success.html", secretWord=secretWord, id=id)
