@@ -5,13 +5,8 @@ class Hangman:
     games = dict()
     counter = 1
 
-    def getWord():
-      wordList = ['apple', 'banana', 'kiwi', 'orange', 'tomato', 'juice', 'firewood', 'beautiful', 'pencil']
-      randomWord = random.choice(wordList)
-      return randomWord
-
     @classmethod
-    def new_game(cls, secretWord=getWord()):
+    def new_game(cls, secretWord):
         game = cls(secretWord, cls.counter)
         cls.games[game.id] = game
         cls.counter = cls.counter + 1
