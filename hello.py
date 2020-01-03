@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-
 from Hangman import Hangman
 
 app = Flask(__name__)
@@ -10,6 +9,8 @@ def home():
 
 @app.route('/start', methods=['POST', 'GET'])
 @app.route('/result', methods=['POST', 'GET'])
+@app.route('/double_start', methods=['POST', 'GET'])
+@app.route('/join', methods=['POST', 'GET'])
 def start_game():
     if request.method == 'POST':
       # username = request.form['username']
@@ -18,6 +19,9 @@ def start_game():
         return render_game(game,'')
       elif request.form['submit_button'] in ['Start Two Player Mode', 'Replay Two Player Mode']:
         return render_template('double_options.html')
+      elif request.form['submit_button'] == "Join Game":
+        game = Hangman.new_game()
+        return render_game(game,'')
       elif request.form['submit_button'] == "Menu":
         return render_template('index.html')
     return "Game started"
@@ -46,19 +50,20 @@ def guess():
             return render_template("single_result.html", result= "lost", secret_word=game.secretWord)
         return render_game(game, " Your guess is: " + letter)
 
-@app.route('/choice', methods=['POST', 'GET'])
+@app.route('/create', methods=['POST', 'GET'])
 def create_join_game():
     if request.method == 'POST':
       if request.form['submit_button'] == "Create A New Game":
         return render_template("double_create_game.html")
       if request.form['submit_button'] == "Join A Game":
-        pass
+        return render_template("double_create_game.html")
       return "Create/Join Game"
 
 @app.route('/create_success', methods=['POST', 'GET'])
 def create_success():
     if request.method == 'POST':
       secretWord = request.form['word_to_guess'].lower()
+      # game_id = random.randint(0,1000)
       game = Hangman.new_game(secretWord)
     return render_template("double_create_success.html", secretWord=secretWord)
 
