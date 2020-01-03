@@ -20,7 +20,8 @@ def start_game():
       elif request.form['submit_button'] in ['Start Two Player Mode', 'Replay Two Player Mode']:
         return render_template('double_options.html')
       elif request.form['submit_button'] == "Join Game":
-        game = Hangman.new_game()
+        id = int(request.form['id'])
+        game = Hangman.get_game(id)
         return render_game(game,'')
       elif request.form['submit_button'] == "Menu":
         return render_template('index.html')
@@ -56,16 +57,25 @@ def create_join_game():
       if request.form['submit_button'] == "Create A New Game":
         return render_template("double_create_game.html")
       if request.form['submit_button'] == "Join A Game":
-        return render_template("double_create_game.html")
+        return render_template("double_create_game.html", '')
       return "Create/Join Game"
 
 @app.route('/create_success', methods=['POST', 'GET'])
 def create_success():
     if request.method == 'POST':
       secretWord = request.form['word_to_guess'].lower()
-      # game_id = random.randint(0,1000)
+
+      for ch in secretWord:
+        if not ch.isalpha():
+          message = "Invalid input: only a secret word with all alphabetical letters allowed!"
+          return render_template("double_create_game.html", message=message) 
+      if len(set(list(secretWord))) >= 20:
+          message = "Invalid input: only a word fewer than 20 dictict digits allowed"
+          return render_template("double_create_game.html", message=message)     
+
       game = Hangman.new_game(secretWord)
-    return render_template("double_create_success.html", secretWord=secretWord)
+      id = game.id
+    return render_template("double_create_success.html", secretWord=secretWord, id=id)
 
 def render_game(game, message):
     display = "".join(game.get_word())

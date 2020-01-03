@@ -1,9 +1,11 @@
 <html>
    <body>
-      <form action = "http://localhost:5000/" method = "post">
-         <input type="hidden" name="gameId" value={{ game_id }}>
+      <form action = "http://localhost:5000/result" method = "post">
          <p>Created a new game successfully!</p>
          <p>Your secret word is: {{ secretWord }}</p>
+         <p>Your game ID is: {{ id }}</p> 
+         <p>Please pass this ID to player 2</p>
+         <p><input type="submit" name="submit_button" value="Menu" /></p>
       </form>
    </body>
 </html>

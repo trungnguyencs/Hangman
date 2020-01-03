@@ -2,6 +2,7 @@
    <body>
       <form action = "http://localhost:5000/guess" method = "post">
          <input type="hidden" name="gameId" value={{ game_id }}>
+         <p>Game ID: {{ game_id }}</p>
          <p>Enter a character:</p>
          <p><input type = "text" name = "character" /> {{ message }}</p>
          <p><input type = "submit" value = "Guess" /></p>

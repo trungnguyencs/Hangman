@@ -5,8 +5,13 @@ class Hangman:
     games = dict()
     counter = 1
 
+    def getWord():
+      wordList = ['apple', 'banana', 'kiwi', 'orange', 'tomato', 'juice', 'firewood', 'beautiful', 'pencil']
+      randomWord = random.choice(wordList)
+      return randomWord
+
     @classmethod
-    def new_game(cls, secretWord=random.choice(['apple', 'banana', 'kiwi', 'orange', 'tomato', 'juice', 'firewood', 'beautiful', 'pencil'])):
+    def new_game(cls, secretWord=getWord()):
         game = cls(secretWord, cls.counter)
         cls.games[game.id] = game
         cls.counter = cls.counter + 1
@@ -46,8 +51,3 @@ class Hangman:
 
     def isLosing(self):
         return len(self.incorrectLetters) >= 6
-
-def getWord():
-    wordList = ['apple', 'banana', 'kiwi', 'orange', 'tomato', 'juice', 'firewood', 'beautiful', 'pencil']
-    randomWord = random.choice(wordList)
-    return randomWord
