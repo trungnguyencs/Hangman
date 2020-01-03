@@ -59,9 +59,13 @@ def guess():
     if check_valid(letter): return render_game(game, check_valid(letter))
     game.guess(letter)
     if game.isWinning():
-        return render_template("single_result.html", result= "won", secret_word=game.secretWord)
+      secretWord = game.secretWord
+      game.delete_game(game.id)
+      return render_template("single_result.html", result= "won", secret_word=secretWord)
     if game.isLosing():
-        return render_template("single_result.html", result= "lost", secret_word=game.secretWord)
+      secretWord = game.secretWord
+      game.delete_game(game.id)
+      return render_template("single_result.html", result= "lost", secret_word=secretWord)
     return render_game(game, " Your guess is: " + letter)
 
 @app.route('/create', methods=['POST', 'GET'])

@@ -2,47 +2,50 @@ import subprocess as sp
 import random
 
 class Hangman:
-    games = dict()
-    counter = 1
+  games = dict()
+  counter = 1
 
-    @classmethod
-    def new_game(cls, secretWord):
-        game = cls(secretWord, cls.counter)
-        cls.games[game.id] = game
-        cls.counter = cls.counter + 1
-        return game
+  @classmethod
+  def new_game(cls, secretWord):
+    game = cls(secretWord, cls.counter)
+    cls.games[game.id] = game
+    cls.counter = cls.counter + 1
+    return game
 
-    @classmethod
-    def get_game(cls, id):
-        return cls.games[id]
+  @classmethod
+  def get_game(cls, id):
+    return cls.games[id]
 
-    def __init__(self, secretWord, counter):
-        self.secretWord = secretWord.lower()
-        self.displayWord = list('_ ' * len(secretWord))
-        self.incorrectLetters = []
-        self.id = counter
-        self.usedLetters = set()
+  def delete_game(cls, id):
+    del cls.games[id]
 
-    def guess(self, guessLetter):
-        self.usedLetters.add(guessLetter)
-        if guessLetter in self.secretWord:
-            for index in range(len(self.secretWord)):
-                if self.secretWord[index] == guessLetter:
-                    self.displayWord[2 * index] = guessLetter
-        else:
-            self.incorrectLetters.append(guessLetter)
+  def __init__(self, secretWord, counter):
+    self.secretWord = secretWord.lower()
+    self.displayWord = list('_ ' * len(secretWord))
+    self.incorrectLetters = []
+    self.id = counter
+    self.usedLetters = set()
 
-    def get_word(self):
-        return self.displayWord
+  def guess(self, guessLetter):
+    self.usedLetters.add(guessLetter)
+    if guessLetter in self.secretWord:
+      for index in range(len(self.secretWord)):
+        if self.secretWord[index] == guessLetter:
+          self.displayWord[2 * index] = guessLetter
+    else:
+        self.incorrectLetters.append(guessLetter)
 
-    def get_incorrect(self):
-        return self.incorrectLetters
+  def get_word(self):
+    return self.displayWord
 
-    def gameOver(self):
-        return self.isWinning() or self.isLosing()
+  def get_incorrect(self):
+    return self.incorrectLetters
 
-    def isWinning(self):
-        return len(self.incorrectLetters) < 6 and not ('_' in self.displayWord)
+  def gameOver(self):
+    return self.isWinning() or self.isLosing()
 
-    def isLosing(self):
-        return len(self.incorrectLetters) >= 6
+  def isWinning(self):
+    return len(self.incorrectLetters) < 6 and not ('_' in self.displayWord)
+
+  def isLosing(self):
+    return len(self.incorrectLetters) >= 6
